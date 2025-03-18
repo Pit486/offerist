@@ -8,11 +8,11 @@ from tkinter import *
 outText=''
 client=''
 pic=[]
+folder = 'pic'
 
-
-picd = os.listdir('pic')
-for i in picd:
-    pic.append(str(i.replace('.jpeg','')))
+for current, subdirs, files in os.walk(folder):#создание списка изображений
+    for file in files:
+        pic.append(str(file.replace('.jpeg','')))
 
 def d_now():
     dt_in=(str(datetime.now()))
@@ -49,13 +49,15 @@ def pdf_out():
     
     pic_y=18#18
     r=0#счётчик строк
+    
     for row in data:
+        #row=row[1].replace('/','_')
         r+=1
         pdf.cell(35, row_height*spacing, txt=row[0], border=0)
         img=''
         imis=False
         for i in pic:#poisk v spiske kartinok
-            if i in (row[1]).upper():
+            if i in (row[1]).upper().replace('/','_'):
                 img='pic//'+i+'.jpeg'
                 
                 pdf.image(img, x=25, y=pic_y, w=25)
@@ -70,7 +72,7 @@ def pdf_out():
         if len(row[1])<50:
             pdf.cell(120, row_height*spacing, txt=row[1], border=0,align="C")
             pdf.cell(20, row_height*spacing, txt=row[2]+' €', border=0)
-            pdf.cell(30, row_height*spacing, txt=row[3], border=0)
+            pdf.cell(20, row_height*spacing, txt=row[3], border=0)
             pdf.ln(row_height*spacing)
             pdf.ln(row_height*spacing)
         else:
@@ -81,6 +83,7 @@ def pdf_out():
             pdf.ln(row_height*spacing)
             pdf.cell(35, row_height*spacing, txt=' ', border=0)
             pdf.cell(120, row_height*spacing, txt=pn, border=0,align="C")
+            pdf.cell(20, row_height*spacing, txt=row[3], border=0)
             pdf.ln(row_height*spacing)
 
             #new page
@@ -173,7 +176,6 @@ entry1b.pack(side=LEFT, pady=10)
 entry1c = Entry(f_1, width=20)
 entry1c.pack(side=LEFT, pady=10)
 
-
 labelf1 = Label(ff, width=12, text = 'Code')
 labelf1.pack(side=LEFT, pady=0)
 labelf1a = Label(ff, width=65, text = 'Description')
@@ -183,15 +185,12 @@ labelf1b.pack(side=LEFT, pady=0)
 labelf1c = Label(ff, width=15, text = 'Remark')
 labelf1c.pack(side=LEFT, pady=0)
 
-
 button1 = Button(f_2,width=15, text="PDF", command=pdf_out)
 button1.pack(side=RIGHT, expand=1)
 button0 = Button(f_2,width=15, text="")
 button0.pack(side=RIGHT, expand=1)
 button2 = Button(f_2,width=15, text="+", command=plus)
 button2.pack(side=RIGHT, expand=1)
-
-
 
 window.mainloop()
 
